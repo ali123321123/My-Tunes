@@ -20,22 +20,6 @@ namespace MyTunes.Repositories
 
         public List<Customer> GetAllCustomers()
         {
-            //id,firstname ,lastname,country,postalcode,phone number,email
-            /*
-             [CustomerId] INT NOT NULL IDENTITY,
-    [FirstName] NVARCHAR(40) NOT NULL,
-    [LastName] NVARCHAR(20) NOT NULL,
-    [Company] NVARCHAR(80),
-    [Address] NVARCHAR(70),
-    [City] NVARCHAR(40),
-    [State] NVARCHAR(40),
-    [Country] NVARCHAR(40),
-    [PostalCode] NVARCHAR(10),
-    [Phone] NVARCHAR(24),
-    [Fax] NVARCHAR(24),
-    [Email] NVARCHAR(60) NOT NULL,
-    [SupportRepId] INT, 
-             */
             List<Customer> custList = new List<Customer>();
             string sql = "SELECT CustomerId,FirstName,LastName,Country,PostalCode,Phone,Email FROM Customer";
             try
@@ -51,16 +35,11 @@ namespace MyTunes.Repositories
                             {
                                 Customer temp = new Customer();
 
-                               
                                 temp.CustomerId= reader.GetInt32(0);
                                 temp.FirstName = SafeGetString(1, reader);
                                 temp.LastName = SafeGetString(2, reader);
                                 temp.Country = SafeGetString(3, reader);
-                               
-
-                                    temp.PostalCode = SafeGetString(4, reader);
-                                
-                                   
+                                temp.PostalCode = SafeGetString(4, reader);    
                                 temp.Phone = SafeGetString(5, reader);
                                 temp.Email = SafeGetString(6, reader);
 
@@ -77,17 +56,14 @@ namespace MyTunes.Repositories
             return custList;
         }
 
-        internal bool AddNewCustomer(Customer customer)
-        {
-            throw new NotImplementedException();
-        }
+       
 
         internal object GetCustomer(string id)
         {
             throw new NotImplementedException();
         }
 
-       
+
 
         /*
        public Customer GetCustomer(string id)
@@ -125,39 +101,42 @@ namespace MyTunes.Repositories
 */
 
 
-        /*
-        public bool AddNewCustomer(Customer customer)
-        {
-            bool success = false;
-            string sql = "INSERT INTO Customers(CustomerID,CompanyName,ContactName,City) " +
-                "VALUES(@CustomerID,@CompanyName,@ContactName,@City)";
+
+public bool AddNewCustomer(Customer customer)
+{
+    bool success = false;
+            string sql = "INSERT INTO Customer(FirstName, LastName, Country, PostalCode, Phone, Email) " +
+                        "VALUES (@FirstName, @LastName, @Country, @PostalCode, @Phone, @Email)";
+
             try
             {
-                using (SqlConnection conn = new SqlConnection(ConnectionHelper.GetConnectionstring()))
-                {
-                    conn.Open();
-                    using (SqlCommand cmd = new SqlCommand(sql, conn))
-                    {
-                        cmd.Parameters.AddWithValue("@CustomerID", customer.CustomerID);
-                        cmd.Parameters.AddWithValue("@CompanyName", customer.CompanyName);
-                        cmd.Parameters.AddWithValue("@ContactName", customer.ContactName);
-                        cmd.Parameters.AddWithValue("@City", customer.City);
-                        success = cmd.ExecuteNonQuery() > 0 ? true : false;
-                    }
-                }
-            }
-            catch (SqlException ex)
-            {
-                // Log to console
-            }
-            return success;
-        }
-        */
-
-        public bool UpdateCustomer(Customer customer)
+        using (SqlConnection conn = new SqlConnection(ConnectionHelper.GetConnectionstring()))
         {
-            throw new NotImplementedException();
+            conn.Open();
+            using (SqlCommand cmd = new SqlCommand(sql, conn))
+            {
+                cmd.Parameters.AddWithValue("@FirstName", customer.FirstName);
+                cmd.Parameters.AddWithValue("@LastName", customer.LastName);
+                cmd.Parameters.AddWithValue("@Country", customer.Country);
+                cmd.Parameters.AddWithValue("@PostalCode", customer.PostalCode);
+                cmd.Parameters.AddWithValue("@Phone", customer.Phone);
+                cmd.Parameters.AddWithValue("@Email", customer.Email);
+                success = cmd.ExecuteNonQuery() > 0 ? true : false;
+            }
         }
-
     }
+    catch (SqlException ex)
+    {
+                Console.WriteLine(ex.Message);
+    }
+    return success;
+}
+
+
+public bool UpdateCustomer(Customer customer)
+{
+    throw new NotImplementedException();
+}
+
+}
 }
