@@ -73,6 +73,16 @@ namespace MyTunes.Controllers
         }
 
 
+        // GET: api/customers/GetCustomerByHighSpend
+        [HttpGet]
+        [Route("GetCustomerByHighSpend")]
+        public ActionResult<IEnumerable<CustomerByHighSpendDTO>> GetCustomerByHighSpend()
+        {
+            // Going to use our CustomerRepository to fetch all customers
+            return Ok(_customerRepository.GetCustomerByHighSpend());
+        }
+
+
 
 
 
