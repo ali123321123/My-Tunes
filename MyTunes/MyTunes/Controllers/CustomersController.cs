@@ -50,6 +50,7 @@ namespace MyTunes.Controllers
         [HttpPut("{id}")]
         public ActionResult Put(int id, Customer customer)
         {
+            
             // Check for bad request 
             if (id != customer.CustomerId)
             {
@@ -57,7 +58,7 @@ namespace MyTunes.Controllers
             }
             // Going to use our CustomerRepository to update an existing customer 
             bool success = _customerRepository.UpdateCustomer(customer);
-            return NoContent();
+            return CreatedAtAction(nameof(Get), new { id = customer.CustomerId }, success);
         }
     }
 
