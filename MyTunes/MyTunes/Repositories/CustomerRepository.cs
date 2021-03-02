@@ -1,5 +1,6 @@
 ﻿using MyTunes.Models;
 using MyTunes.Models.DataAccess;
+using MyTunes.Models.DTO;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -67,7 +68,7 @@ namespace MyTunes.Repositories
         public List<CustomersEachCountryDTO> GetAmountCustomerByCountry()
         {
             List<CustomersEachCountryDTO> cuntList = new List<CustomersEachCountryDTO>();
-            string query= " SELECT COUNT(CustomerId), Country FROM [Chinook].[dbo].[Customer] GROUP BY Country ORDER BY COUNT(CustomerID) DESC";
+            string query = " SELECT COUNT(CustomerId), Country FROM [Chinook].[dbo].[Customer] GROUP BY Country ORDER BY COUNT(CustomerID) DESC";
 
             try
             {
@@ -98,7 +99,50 @@ namespace MyTunes.Repositories
 
         }
 
-        public List<CustomerByHighSpendDTO> GetCustomerByHighSpend()
+        public List<PopularGenreToCustomer> GetPopularGenreToCustome(int id)
+        {
+            List<PopularGenreToCustomer> pubGnreList = new List<PopularGenreToCustomer>();
+
+            string query = "SELECT TOP 1 WITH TIES Genre.Name, COUNT(Genre.Name) AS Total from Invoice,InvoiceLine,Track,Genre WHERE Invoice.CustomerId =@CustomerId and Invoice.InvoiceId = InvoiceLine.InvoiceId  and InvoiceLine.TrackId = Track.TrackId  and Track.GenreId = Genre.GenreId GROUP BY Genre.Name ORDER BY Total DESC";
+            ;
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(ConnectionHelper.GetConnectionstring()))
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@CustomerId", id);
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                PopularGenreToCustomer genre = new PopularGenreToCustomer();
+                                genre.PopularGenre = reader.GetString(0);
+                                genre.Total = reader.GetInt32(1);
+                                pubGnreList.Add(genre);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw ex;
+
+            }
+
+            return pubGnreList;
+        }
+
+    
+
+
+    
+
+    public List<CustomerByHighSpendDTO> GetCustomerByHighSpend()
         {
             List<CustomerByHighSpendDTO> spendersList = new List<CustomerByHighSpendDTO>();
             string query = "SELECT Sum(Total),CustomerId  FROM [Chinook].[dbo].[Invoice]GROUP BY CustomerId ORDER BY SUM(Total) DESC";

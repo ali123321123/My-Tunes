@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyTunes.Models;
 using MyTunes.Models.DataAccess;
+using MyTunes.Models.DTO;
 using MyTunes.Repositories;
 using System;
 using System.Collections.Generic;
@@ -44,14 +45,14 @@ namespace MyTunes.Controllers
         {
             // Going to use our CustomerRepository to add a new customer 
             bool success = _customerRepository.AddNewCustomer(customer);
-            return CreatedAtAction(nameof(Get), new { id = customer.CustomerId}, success);
+            return CreatedAtAction(nameof(Get), new { id = customer.CustomerId }, success);
         }
 
         // PUT api/customers/ALFKI
         [HttpPut("{id}")]
         public ActionResult Put(int id, Customer customer)
         {
-            
+
             // Check for bad request 
             if (id != customer.CustomerId)
             {
@@ -83,6 +84,14 @@ namespace MyTunes.Controllers
         }
 
 
+
+        // GET: api/customers/id/popularGenre
+        [HttpGet]
+        [Route("{id}/GetPopularGenreToCustome")]
+        public ActionResult<IEnumerable<PopularGenreToCustomer>> GetPopularGenreToCustomer(int id)
+        { 
+            return Ok(_customerRepository.GetPopularGenreToCustome(id));
+        }
 
 
 
