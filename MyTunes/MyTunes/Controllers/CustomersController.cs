@@ -63,14 +63,21 @@ namespace MyTunes.Controllers
         }
 
 
-        // GET: api/customers/groups
+        // GET: api/customers/GetCountCustomerByCountry
         [HttpGet]
-        [Route("GetAmountCustomerByCountry")]
+        [Route("GetCountCustomerByCountry")]
         public ActionResult<IEnumerable<CustomersEachCountryDTO>> GetAmountCustomerByCountry()
         {
             // Going to use our CustomerRepository to fetch all customers
             return Ok(_customerRepository.GetAmountCustomerByCountry());
         }
+
+
+
+
+
+
+
     }
 
 }

@@ -84,8 +84,6 @@ namespace MyTunes.Repositories
 
                                 temp.COUNT = reader.GetInt32(0);
                                 temp.Country = SafeGetString(1, reader);
-
-
                                 cuntList.Add(temp);
                             }
                         }
