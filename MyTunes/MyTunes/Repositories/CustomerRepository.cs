@@ -98,43 +98,37 @@ namespace MyTunes.Repositories
 
         }
 
+        public List<CustomerByHighSpendDTO> GetCustomerByHighSpend()
+        {
+            List<CustomerByHighSpendDTO> spendersList = new List<CustomerByHighSpendDTO>();
+            string query = "SELECT Sum(Total),CustomerId  FROM [Chinook].[dbo].[Invoice]GROUP BY CustomerId ORDER BY SUM(Total) DESC";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(ConnectionHelper.GetConnectionstring()))
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                CustomerByHighSpendDTO temp = new CustomerByHighSpendDTO();
 
-
-        /*
-       public Customer GetCustomer(string id)
-       {
-           Customer customer = new Customer();
-           string sql = "SELECT CustomerID, CompanyName, ContactName, City FROM Customers" +
-               " WHERE CustomerID = @CustomerID";
-           try
-           {
-               using (SqlConnection conn = new SqlConnection(ConnectionHelper.GetConnectionstring()))
-               {
-                   conn.Open();
-                   using (SqlCommand cmd = new SqlCommand(sql, conn))
-                   {
-                       cmd.Parameters.AddWithValue("@CustomerID", id);
-                       using (SqlDataReader reader = cmd.ExecuteReader())
-                       {
-                           while (reader.Read())
-                           {
-                               customer.CustomerID = reader.GetString(0);
-                               customer.CompanyName = reader.GetString(1);
-                               customer.ContactName = reader.GetString(2);
-                               customer.City = reader.GetString(3);
-                           }
-                       }
-                   }
-               }
-           }
-           catch (SqlException ex)
-           {
-               // Log to console
-           }
-           return customer;
-       }
-*/
-
+                                temp.SumOFTotal = reader.GetDecimal(0);
+                                temp.CustomerId = reader.GetInt32(1);
+                                spendersList.Add(temp);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                // Log to console
+            }
+            return spendersList;
+        }
 
 
         public bool AddNewCustomer(Customer customer)
