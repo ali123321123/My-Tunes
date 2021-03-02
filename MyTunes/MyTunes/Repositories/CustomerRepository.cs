@@ -1,4 +1,5 @@
 ﻿using MyTunes.Models;
+using MyTunes.Models.DataAccess;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -61,6 +62,42 @@ namespace MyTunes.Repositories
         internal object GetCustomer(string id)
         {
             throw new NotImplementedException();
+        }
+
+        public List<CustomersEachCountryDTO> GetAmountCustomerByCountry()
+        {
+            List<CustomersEachCountryDTO> cuntList = new List<CustomersEachCountryDTO>();
+            string query= " SELECT COUNT(CustomerId), Country FROM [Chinook].[dbo].[Customer] GROUP BY Country ORDER BY COUNT(CustomerID) DESC";
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(ConnectionHelper.GetConnectionstring()))
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        using (SqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                CustomersEachCountryDTO temp = new CustomersEachCountryDTO();
+
+                                temp.COUNT = reader.GetInt32(0);
+                                temp.Country = SafeGetString(1, reader);
+
+
+                                cuntList.Add(temp);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                // Log to console
+            }
+            return cuntList;
+
         }
 
 

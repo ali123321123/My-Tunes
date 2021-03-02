@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MyTunes.Models;
+using MyTunes.Models.DataAccess;
 using MyTunes.Repositories;
 using System;
 using System.Collections.Generic;
@@ -59,6 +60,16 @@ namespace MyTunes.Controllers
             // Going to use our CustomerRepository to update an existing customer 
             bool success = _customerRepository.UpdateCustomer(customer);
             return CreatedAtAction(nameof(Get), new { id = customer.CustomerId }, success);
+        }
+
+
+        // GET: api/customers/groups
+        [HttpGet]
+        [Route("GetAmountCustomerByCountry")]
+        public ActionResult<IEnumerable<CustomersEachCountryDTO>> GetAmountCustomerByCountry()
+        {
+            // Going to use our CustomerRepository to fetch all customers
+            return Ok(_customerRepository.GetAmountCustomerByCountry());
         }
     }
 
